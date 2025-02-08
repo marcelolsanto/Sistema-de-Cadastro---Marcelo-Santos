@@ -1,0 +1,93 @@
+# Dependências
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Diretórios de build e saída
+dist/
+build/
+out/
+.next/
+
+# Arquivos de configuração de IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Cobertura de testes
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+
+# Arquivos temporários
+*.tmp
+*.bak
+
+# Banco de dados local
+*.sqlite
+*.db
+
+# Uploads de usuários (se aplicável)
+uploads/
+
+# Dependências específicas do projeto
+.pnp
+.pnp.js
+
+# Configurações do TypeScript (se estiver usando)
+*.tsbuildinfo
+
+# Arquivos de lock de gerenciadores de pacotes
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Configurações de produção
+.netlify
+.vercel
+.now
+
+# Arquivos de cache do Jest
+jest-*
+
+# Arquivos de backup do Sequelize
+.sequelizerc
+
+# Diretório de migração de banco de dados
+migrations/
+seeders/
+
+# Arquivos de dados MySQL
+*.myd
+*.myi
+*.frm
+
+# Configurações específicas do ambiente
+config/local.js
+config/local.json
+
+# Documentos sensíveis
+*.pem
+*.key
