@@ -6,36 +6,51 @@ export const authMiddleware = async (req, res, next) => {
         const authHeader = req.headers.authorization;
 
         if (!authHeader) {
-            console.log('Token não fornecido');
             return res.status(401).json({ error: 'Token não fornecido' });
         }
 
         const [, token] = authHeader.split(' ');
-        console.log('Token recebido:', token);
 
         const authService = new AuthService();
         const decoded = authService.verifyToken(token);
-        console.log('Token decodificado:', decoded);
 
         req.userId = decoded.id;
         req.userType = decoded.tipo;
 
         return next();
     } catch (error) {
-        console.error('Erro de autenticação:', error);
         return res.status(401).json({ error: 'Token inválido' });
     }
 };
 
-export const authorize = (roles = []) => {
+export const authorize = (allowedRoles = [], selfAccessOnly = false) => {
     return (req, res, next) => {
-        console.log('Tipo de usuário:', req.userType);
-        console.log('Roles permitidas:', roles);
+        // Tipos de usuários com permissão de administrador
+        const adminRoles = ['lojas', 'fornecedores', 'vendedores', 'liberadores', 'medidores'];
 
-        if (!roles.includes(req.userType)) {
-            console.log('Acesso não autorizado');
+        // Verificar se o usuário tem permissão por papel
+        const hasRolePermission = allowedRoles.length === 0 || 
+            allowedRoles.includes(req.userType) || 
+            (adminRoles.includes(req.userType) && allowedRoles.includes('admin'));
+
+        // Verificar acesso próprio
+        const requestedUserId = parseInt(req.params.id);
+        const isSelfAccess = requestedUserId === req.userId;
+
+        // Lógica de autorização
+        if (selfAccessOnly) {
+            // Se for acesso próprio, permite
+            if (isSelfAccess) {
+                return next();
+            }
             return res.status(403).json({ error: 'Acesso não autorizado' });
         }
-        next();
+
+        // Verificar permissão de papel e administrador
+        if (hasRolePermission || (adminRoles.includes(req.userType) && !selfAccessOnly)) {
+            return next();
+        }
+
+        return res.status(403).json({ error: 'Acesso não autorizado' });
     };
 };

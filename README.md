@@ -1,5 +1,5 @@
 ________________________________________
-#Documentação do Projeto: Sistema de Cadastro API
+Documentação do Projeto: Sistema de Cadastro API
 1. Introdução
 •	Nome do Projeto: Sistema de Cadastro API
 •	Descrição:
