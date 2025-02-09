@@ -1,10 +1,16 @@
 // src/infrastructure/http/routes/userRoutes.js
+
 import express from 'express';
 import { authorization, authMiddleware } from '../middlewares/auth.js';
 import { UserController } from '../controllers/UserController.js';
 
 const router = express.Router();
 const userController = new UserController();
+
+// Wrapper para tratar erros assíncronos
+const asyncHandler = (fn) => (req, res, next) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+};
 
 /**
  * @swagger
@@ -35,8 +41,8 @@ const userController = new UserController();
 router.get('/',authorization,authMiddleware(['admin', 'vendedor', 'liberador', 'fornecedor', 'medidor', 'loja', 'cliente']),
     asyncHandler((req, res) => userController.getAllUsers(req, res))
 );
-router.get('/', authorization,authMiddleware(['admin', 'vendedor', 'liberador', 'fornecedor', 'medidor', 'loja', 'cliente']), 
-    userController.getAllUsers);
+router.get('/', authorization,authMiddleware
+    (['admin', 'vendedor', 'liberador', 'fornecedor', 'medidor', 'loja', 'cliente']), userController.getAllUsers);
 /**
  * @swagger
  * /users/{id}:
@@ -169,6 +175,10 @@ router.put('/:id', authorization, authMiddleware(['admin']),userController.updat
  *         description: Usuário não encontrado
  */
 // Rota para deletar usuário
-router.delete('/:id',  authorization, authMiddleware(['admin']),userController.deleteUser);
+router.delete('/:id', 
+    authorization,
+    authMiddleware(['admin']),
+    asyncHandler((req, res) => userController.deleteUser(req, res))
+);
 
 export default userRoutes;
