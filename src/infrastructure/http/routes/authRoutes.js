@@ -1,8 +1,8 @@
 // src/infrastructure/http/routes/authRoutes.js
-import { Router } from 'express';
+import express from 'express';
 import { AuthController } from '../controllers/AuthController.js';
 
-const router = Router();
+const router = express.Router();
 const authController = new AuthController();
 
 /**
@@ -32,7 +32,7 @@ const authController = new AuthController();
  *       201:
  *         description: Usuário criado com sucesso
  */
-router.post('/register', (req, res) => authController.register(req, res));
+router.post('/register', authController.register.bind(authController));
 
 
 /**
@@ -56,6 +56,6 @@ router.post('/register', (req, res) => authController.register(req, res));
  *       200:
  *         description: Login realizado com sucesso
  */
-router.post('/login', (req, res) => authController.login(req, res));
+router.post('/login', authController.login.bind(authController));
 
 export default router;

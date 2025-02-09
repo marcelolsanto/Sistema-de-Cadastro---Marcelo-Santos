@@ -1,10 +1,10 @@
 // src/infrastructure/http/controllers/AuthController.js
-import { BaseController } from './BaseController.js'; 
+import { BaseController } from './BaseController.js';
 import { CreateUserUseCase } from '../../../application/useCases/user/CreateUserUseCase.js';
-import { LoginUseCase } from '../../../application/useCases/user/LoginUseCase.js'; // Adicione esta linha
-import { AuthService } from '../../../domain/services/AuthService.js'; 
-import { SequelizeUserRepository } from '../../database/repositories/index.js'; 
-import { UserModel } from '../../database/models/sequelize/UserModel.js';  
+import { LoginUseCase } from '../../../application/useCases/user/LoginUseCase.js';
+import { AuthService } from '../../../domain/services/AuthService.js';
+import { SequelizeUserRepository } from '../../database/repositories/sequelize/SequelizeUserRepository.js';
+import { UserModel } from '../../database/models/sequelize/UserModel.js';
 
 export class AuthController extends BaseController {
     constructor() {

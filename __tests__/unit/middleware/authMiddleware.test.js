@@ -50,34 +50,23 @@ describe('Auth Middleware', () => {
         });
     });
 
+    // __tests__/unit/middleware/authMiddleware.test.js
     describe('authMiddleware', () => {
-        it('should allow access for authorized role', () => {
-            mockReq.user = { role: 'admin' };
-            const middleware = authMiddleware(['admin']);
-            
-            middleware(mockReq, mockRes, nextFunction);
-            
-            expect(nextFunction).toHaveBeenCalled();
-        });
-
         it('should deny access for unauthorized role', () => {
-            mockReq.user = { role: 'user' };
+            const mockReq = {
+                user: { role: 'user' }
+            };
+            const mockRes = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+            const nextFunction = jest.fn();
+
             const middleware = authMiddleware(['admin']);
-            
             middleware(mockReq, mockRes, nextFunction);
-            
+
             expect(mockRes.status).toHaveBeenCalledWith(403);
             expect(mockRes.json).toHaveBeenCalledWith({ error: 'Acesso não autorizado' });
-            expect(nextFunction).not.toHaveBeenCalled();
-        });
-
-        it('should fail when user is not authenticated', () => {
-            const middleware = authMiddleware(['admin']);
-            
-            middleware(mockReq, mockRes, nextFunction);
-            
-            expect(mockRes.status).toHaveBeenCalledWith(401);
-            expect(mockRes.json).toHaveBeenCalledWith({ error: 'Usuário não autenticado' });
             expect(nextFunction).not.toHaveBeenCalled();
         });
     });

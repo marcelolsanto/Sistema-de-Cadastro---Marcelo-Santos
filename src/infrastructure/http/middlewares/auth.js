@@ -1,5 +1,4 @@
 // src/infrastructure/http/middlewares/auth.js
-
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
@@ -32,7 +31,10 @@ export const authMiddleware = (allowedRoles) => (req, res, next) => {
         }
 
         if (!allowedRoles.includes(req.user.role)) {
-            return res.status(403).json({ error: 'Acesso não autorizado' });
+            return res.status(403).json({ 
+                error: 'Acesso não autorizado'
+                // Removidos os campos extras para manter consistência com os testes
+            });
         }
 
         next();

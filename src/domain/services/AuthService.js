@@ -17,12 +17,12 @@ export class AuthService {
 
     generateToken(user) {
         return jwt.sign(
-            { 
-                id: user.id, 
-                email: user.email, 
-                role: user.tipoUsuario 
-            }, 
-            process.env.JWT_SECRET || 'seu_segredo_aqui', 
+            {
+                id: user.id,
+                email: user.email,
+                role: user.tipo  // Alterado de tipoUsuario para tipo
+            },
+            process.env.JWT_SECRET || 'seu_segredo_aqui',
             { expiresIn: '24h' }
         );
     }

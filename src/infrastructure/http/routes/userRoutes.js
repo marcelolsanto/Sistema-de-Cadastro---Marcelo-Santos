@@ -1,10 +1,9 @@
 // src/infrastructure/http/routes/userRoutes.js
-
 import express from 'express';
+const router = express.Router();
 import { authorization, authMiddleware } from '../middlewares/auth.js';
 import { UserController } from '../controllers/UserController.js';
 
-const router = express.Router();
 const userController = new UserController();
 
 /**
@@ -32,8 +31,9 @@ const userController = new UserController();
  *               items:
  *                 $ref: '#/components/schemas/Usuario'
  */
-router.get('/', authorization, authMiddleware(['admin', 'vendedor', 'liberador', 'fornecedor', 'medidor', 'loja', 'cliente']),
-    userController.getAllUsers);
+// Lista todos os usuários - removido cliente da lista de roles permitidas
+router.get('/', authorization, authMiddleware(['admin', 'vendedor']),
+    userController.getAllUsers.bind(userController));
 /**
  * @swagger
  * /users/{id}:
@@ -59,9 +59,9 @@ router.get('/', authorization, authMiddleware(['admin', 'vendedor', 'liberador',
  *       404:
  *         description: Usuário não encontrado
  */
-// Rota para buscar usuário por ID - acesso próprio ou admin
-// Rota para buscar usuário por ID
-router.get('/:id', authorization,authMiddleware(['admin', 'vendedor']),userController.getUserById);
+// Busca usuário por ID
+router.get('/:id', authorization, authMiddleware(['admin', 'vendedor']),
+    userController.getUserById.bind(userController));
 /**
  * @swagger
  * /users:
@@ -95,8 +95,9 @@ router.get('/:id', authorization,authMiddleware(['admin', 'vendedor']),userContr
  *       400:
  *         description: Erro na criação do usuário
  */
-// Outras rotas mantidas como estavam
-router.post('/', authMiddleware, authorization(['admin']), userController.createUser);
+// Cria novo usuário
+router.post('/', authorization, authMiddleware(['admin']),
+    userController.create.bind(userController));
 
 /**
  * @swagger
@@ -142,8 +143,9 @@ router.post('/', authMiddleware, authorization(['admin']), userController.create
  *       404:
  *         description: Usuário não encontrado
  */
-// Rota para atualizar usuário
-router.put('/:id', authorization, authMiddleware(['admin']),userController.updateUsers);
+// Atualiza usuário
+router.put('/:id', authorization, authMiddleware(['admin']),
+    userController.update.bind(userController));
 /**
  * @swagger
  * /users/{id}:
@@ -165,7 +167,8 @@ router.put('/:id', authorization, authMiddleware(['admin']),userController.updat
  *       404:
  *         description: Usuário não encontrado
  */
-// Rota para deletar usuário
-router.delete('/:id', authorization, authMiddleware(['admin']),userController.deleteUser);
+// Remove usuário
+router.delete('/:id', authorization, authMiddleware(['admin']),
+    userController.delete.bind(userController));
 
-export default userRoutes;
+export default router;
