@@ -7,11 +7,6 @@ import { UserController } from '../controllers/UserController.js';
 const router = express.Router();
 const userController = new UserController();
 
-// Wrapper para tratar erros assíncronos
-const asyncHandler = (fn) => (req, res, next) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-};
-
 /**
  * @swagger
  * tags:
@@ -37,12 +32,8 @@ const asyncHandler = (fn) => (req, res, next) => {
  *               items:
  *                 $ref: '#/components/schemas/Usuario'
  */
-// Rota para listar usuários - acessível para admin, vendedores, fornecedores, liberadores, medidores
-router.get('/',authorization,authMiddleware(['admin', 'vendedor', 'liberador', 'fornecedor', 'medidor', 'loja', 'cliente']),
-    asyncHandler((req, res) => userController.getAllUsers(req, res))
-);
-router.get('/', authorization,authMiddleware
-    (['admin', 'vendedor', 'liberador', 'fornecedor', 'medidor', 'loja', 'cliente']), userController.getAllUsers);
+router.get('/', authorization, authMiddleware(['admin', 'vendedor', 'liberador', 'fornecedor', 'medidor', 'loja', 'cliente']),
+    userController.getAllUsers);
 /**
  * @swagger
  * /users/{id}:
@@ -152,7 +143,7 @@ router.post('/', authMiddleware, authorization(['admin']), userController.create
  *         description: Usuário não encontrado
  */
 // Rota para atualizar usuário
-router.put('/:id', authorization, authMiddleware(['admin']),userController.updateUser);
+router.put('/:id', authorization, authMiddleware(['admin']),userController.updateUsers);
 /**
  * @swagger
  * /users/{id}:
@@ -175,10 +166,6 @@ router.put('/:id', authorization, authMiddleware(['admin']),userController.updat
  *         description: Usuário não encontrado
  */
 // Rota para deletar usuário
-router.delete('/:id', 
-    authorization,
-    authMiddleware(['admin']),
-    asyncHandler((req, res) => userController.deleteUser(req, res))
-);
+router.delete('/:id', authorization, authMiddleware(['admin']),userController.deleteUser);
 
 export default userRoutes;

@@ -16,10 +16,10 @@ describe('Authentication Integration Tests', () => {
     const userTypes = ['admin', 'vendedor', 'cliente'];
     const tokens = {};
 
-    it('deve retornar 401 se o header de autorização não for fornecido aqui', () => {
+    it('deve retornar 401 se o header de autorização não for fornecido aqui', async () => {
         // Arrange: Cria mocks para req, res e next
         const req = { headers: {} };
-        const res = {
+        const res = await { 
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
