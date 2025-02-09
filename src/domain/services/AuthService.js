@@ -1,6 +1,9 @@
 // src/domain/services/AuthService.js
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export class AuthService {
     async hashPassword(senha) {
@@ -17,10 +20,10 @@ export class AuthService {
             { 
                 id: user.id, 
                 email: user.email, 
-                tipo: user.tipo 
+                role: user.tipoUsuario 
             }, 
             process.env.JWT_SECRET || 'seu_segredo_aqui', 
-            { expiresIn: '1h' }
+            { expiresIn: '24h' }
         );
     }
 
@@ -35,3 +38,5 @@ export class AuthService {
         }
     }
 }
+
+export default AuthService;

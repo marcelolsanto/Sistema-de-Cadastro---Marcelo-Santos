@@ -1,13 +1,14 @@
 // src/infrastructure/http/controllers/UserController.js
-import { BaseController } from './BaseController.js';
-import { SequelizeUserRepository } from '../../database/repositories/sequelize/SequelizeUserRepository.js';
-import { UserModel } from '../../database/models/sequelize/UserModel.js';
-import { AuthService } from '../../../domain/services/AuthService.js';
 import { GetAllUsersUseCase } from '../../../application/useCases/user/GetAllUsersUseCase.js';
 import { GetUserByIdUseCase } from '../../../application/useCases/user/GetUserByIdUseCase.js';
 import { UpdateUserUseCase } from '../../../application/useCases/user/UpdateUserUseCase.js';
 import { DeleteUserUseCase } from '../../../application/useCases/user/DeleteUserUseCase.js';
+import { CreateUserUseCase } from '../../../application/useCases/user/CreateUserUseCase.js';
 
+import { BaseController } from './BaseController.js';
+import { SequelizeUserRepository } from '../../database/repositories/sequelize/SequelizeUserRepository.js';
+import { UserModel } from '../../database/models/sequelize/UserModel.js';
+import { AuthService } from '../../../domain/services/AuthService.js';
 export class UserController extends BaseController {
     constructor() {
         super();
