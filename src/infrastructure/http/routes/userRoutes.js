@@ -1,16 +1,10 @@
 // src/infrastructure/http/routes/userRoutes.js
-
 import express from 'express';
 import { authorization, authMiddleware } from '../middlewares/auth.js';
 import { UserController } from '../controllers/UserController.js';
 
 const router = express.Router();
 const userController = new UserController();
-
-// Wrapper para tratar erros assíncronos
-const asyncHandler = (fn) => (req, res, next) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-};
 
 /**
  * @swagger
@@ -38,12 +32,11 @@ const asyncHandler = (fn) => (req, res, next) => {
  *                 $ref: '#/components/schemas/Usuario'
  */
 // Rota para listar usuários - acessível para admin, vendedores, fornecedores, liberadores, medidores
-// Rota para listar usuários
-router.get('/', 
-    authorization,
-    authMiddleware(['admin', 'vendedor', 'liberador', 'fornecedor', 'medidor', 'loja', 'cliente']),
+router.get('/',authorization,authMiddleware(['admin', 'vendedor', 'liberador', 'fornecedor', 'medidor', 'loja', 'cliente']),
     asyncHandler((req, res) => userController.getAllUsers(req, res))
 );
+router.get('/', authorization,authMiddleware(['admin', 'vendedor', 'liberador', 'fornecedor', 'medidor', 'loja', 'cliente']), 
+    userController.getAllUsers);
 /**
  * @swagger
  * /users/{id}:
@@ -71,11 +64,7 @@ router.get('/',
  */
 // Rota para buscar usuário por ID - acesso próprio ou admin
 // Rota para buscar usuário por ID
-router.get('/:id', 
-    authorization,
-    authMiddleware(['admin', 'vendedor']),
-    asyncHandler((req, res) => userController.getUserById(req, res))
-);
+router.get('/:id', authorization,authMiddleware(['admin', 'vendedor']),userController.getUserById);
 /**
  * @swagger
  * /users:
@@ -110,11 +99,7 @@ router.get('/:id',
  *         description: Erro na criação do usuário
  */
 // Outras rotas mantidas como estavam
-router.post('/', 
-    authMiddleware,
-    authorization(['admin']), 
-    asyncHandler((req, res) => userController.createUser(req, res))
-);
+router.post('/', authMiddleware, authorization(['admin']), userController.createUser);
 
 /**
  * @swagger
@@ -161,11 +146,7 @@ router.post('/',
  *         description: Usuário não encontrado
  */
 // Rota para atualizar usuário
-router.put('/:id', 
-    authorization,
-    authMiddleware(['admin']),
-    asyncHandler((req, res) => userController.updateUser(req, res))
-);
+router.put('/:id', authorization, authMiddleware(['admin']),userController.updateUser);
 /**
  * @swagger
  * /users/{id}:
@@ -188,10 +169,6 @@ router.put('/:id',
  *         description: Usuário não encontrado
  */
 // Rota para deletar usuário
-router.delete('/:id', 
-    authorization,
-    authMiddleware(['admin']),
-    asyncHandler((req, res) => userController.deleteUser(req, res))
-);
+router.delete('/:id',  authorization, authMiddleware(['admin']),userController.deleteUser);
 
 export default userRoutes;
