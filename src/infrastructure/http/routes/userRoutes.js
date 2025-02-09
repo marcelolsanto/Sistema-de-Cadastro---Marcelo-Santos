@@ -3,7 +3,8 @@ import { Router } from 'express';
 import { UserController } from '../controllers/UserController.js';
 import { authMiddleware, authorize } from '../middlewares/auth.js';
 
-const router = Router();
+
+export const userRoutes = Router();
 const userController = new UserController();
 
 /**
@@ -31,8 +32,12 @@ const userController = new UserController();
  *               items:
  *                 $ref: '#/components/schemas/Usuario'
  */
-router.get('/', authMiddleware, authorize(['admin']), (req, res) => userController.getAllUsers(req, res));
-
+// Rota para listar usuários - acessível para admin, vendedores, fornecedores, liberadores, medidores
+userRoutes.get('/', 
+    authMiddleware, 
+    authorize(['admin', 'vendedores', 'fornecedores', 'liberadores', 'medidores']), 
+    (req, res) => userController.getAllUsers(req, res)
+);
 /**
  * @swagger
  * /users/{id}:
@@ -58,8 +63,12 @@ router.get('/', authMiddleware, authorize(['admin']), (req, res) => userControll
  *       404:
  *         description: Usuário não encontrado
  */
-router.get('/:id', authMiddleware, authorize(['admin']), (req, res) => userController.getById(req, res));
-
+// Rota para buscar usuário por ID - acesso próprio ou admin
+userRoutes.get('/:id', 
+    authMiddleware, 
+    authorize([], true), 
+    (req, res) => userController.getUserById(req, res)
+);
 /**
  * @swagger
  * /users:
@@ -93,7 +102,12 @@ router.get('/:id', authMiddleware, authorize(['admin']), (req, res) => userContr
  *       400:
  *         description: Erro na criação do usuário
  */
-router.post('/', (req, res) => userController.create(req, res));
+// Outras rotas mantidas como estavam
+userRoutes.post('/', 
+    authMiddleware,
+    authorize(['admin']), 
+    (req, res) => userController.create(req, res)
+);
 
 /**
  * @swagger
@@ -139,8 +153,11 @@ router.post('/', (req, res) => userController.create(req, res));
  *       404:
  *         description: Usuário não encontrado
  */
-router.put('/:id', authMiddleware, authorize(['admin']), (req, res) => userController.update(req, res));
-
+userRoutes.put('/:id', 
+    authMiddleware, 
+    authorize([], true), 
+    (req, res) => userController.update(req, res)
+);
 /**
  * @swagger
  * /users/{id}:
@@ -162,6 +179,10 @@ router.put('/:id', authMiddleware, authorize(['admin']), (req, res) => userContr
  *       404:
  *         description: Usuário não encontrado
  */
-router.delete('/:id', authMiddleware, authorize(['admin']), (req, res) => userController.delete(req, res));
+userRoutes.delete('/:id', 
+    authMiddleware, 
+    authorize(['admin', 'lojas']), 
+    (req, res) => userController.delete(req, res)
+);
 
-export default router;
+export default userRoutes;

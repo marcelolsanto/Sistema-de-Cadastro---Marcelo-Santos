@@ -28,11 +28,49 @@ export class SequelizeUserRepository {
 
     async create(userData) {
         try {
+            // Validar dados antes de criar
+            const validationErrors = this.validateUserData(userData);
+            if (validationErrors.length > 0) {
+                throw new Error(validationErrors.join(', '));
+            }
+
             const user = await this.UserModel.create(userData);
-            return new User(user.toJSON());
+            return user.toJSON();
         } catch (error) {
+            console.error('Erro ao criar usuário:', error);
             throw new Error(`Erro ao criar usuário: ${error.message}`);
         }
+    }
+
+    validateUserData(userData) {
+        const errors = [];
+
+        // Validações personalizadas
+        if (!userData.nome) errors.push('Nome é obrigatório');
+        if (!userData.email) errors.push('Email é obrigatório');
+        if (!userData.cpf) errors.push('CPF é obrigatório');
+        if (!userData.senha_hash) errors.push('Senha é obrigatória');
+        if (!userData.tipo) errors.push('Tipo de usuário é obrigatório');
+
+        // Validar email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (userData.email && !emailRegex.test(userData.email)) {
+            errors.push('Email inválido');
+        }
+
+        // Validar CPF (formato básico)
+        const cpfRegex = /^\d{11}$/;
+        if (userData.cpf && !cpfRegex.test(userData.cpf)) {
+            errors.push('CPF inválido');
+        }
+
+        // Validar tipo de usuário
+        const tiposValidos = ['admin', 'vendedor', 'liberador', 'cliente', 'fornecedor', 'medidor'];
+        if (userData.tipo && !tiposValidos.includes(userData.tipo)) {
+            errors.push('Tipo de usuário inválido');
+        }
+
+        return errors;
     }
 
     async findAll() {
