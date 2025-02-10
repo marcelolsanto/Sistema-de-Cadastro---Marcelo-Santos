@@ -96,7 +96,7 @@ router.get('/:id', authorization, authMiddleware(['admin', 'vendedor']),
  *         description: Erro na criação do usuário
  */
 // Cria novo usuário
-router.post('/', authorization, authMiddleware(['admin']),
+router.post('/', authorization, authMiddleware(['admin','liberador']),
     userController.create.bind(userController));
 
 /**
